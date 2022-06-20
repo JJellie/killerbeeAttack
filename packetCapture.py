@@ -1,4 +1,3 @@
-from unicodedata import decimal
 from scapy import *
 from killerbee.scapy_extensions import *
 import argparse
@@ -13,7 +12,7 @@ key = bytes.fromhex("c7398de1956fbe125d3463a58f1e3a3c")
 pkts = kbrdpcap("/home/kali/Downloads/test.pcap")
 
 dev = KillerBee(device=kbutils.devlist()[0][0])
-
+# Sniff and show a single packet on channel provided in arguments
 pkt = kbsniff(args.channel, iface=dev, count=1)
 pkt = pkts[0]
 pkt[0].show()
